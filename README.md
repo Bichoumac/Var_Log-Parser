@@ -48,7 +48,7 @@ src_ip user host [date] http_method uri, http_version http_status_code bytes htt
 There's one main class (Log), and the others are inherited class (Log*)
 
 The class Log has the following functions :
-    * parse (parse the logs, and output a list of dict. Empty for the Log class, as there's no "standard" log format)
-    * parse_date (that parse the date on standard syslog)
-    * parse_app (that parse the app on secure logs)
-    * parse_host (that parse the host in standard syslog)
+* parse (parse the logs, and output a list of dict. Empty for the Log class, as there's no "standard" log format)
+* parse_date (that parse the date on standard syslog)
+* parse_app (that parse the app on secure logs)
+* parse_host (that parse the host in standard syslog)
