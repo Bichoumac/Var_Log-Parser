@@ -52,3 +52,12 @@ The class Log has the following functions :
 * parse_date (that parse the date on standard syslog)
 * parse_app (that parse the app on secure logs)
 * parse_host (that parse the host in standard syslog)
+
+# Important note
+Some logs doesn't have the year of the event.
+It's especially annoying when we have logs from a year, and logs from another year.
+The year detection is then based on multiple elements : 
+1. First we are extracting the **mtime** in the the bodyfile that is generated using a UAC-Triage collector
+2. If we don't find the .log file in the bodyfile, we search for the same file but compressed with a .gz
+3. If there's nothing, then we search for in the following format in the filename : YYYYMDD
+4. If there's still nothing, we put the current date year as the year
