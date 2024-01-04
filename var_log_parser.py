@@ -9,7 +9,7 @@ import re
 import pandas as pd
 import datetime
 
-DISPLAY_INFO = False
+DISPLAY_INFO = True
 
 def dict_dump_to_jsonl(output_path, input_file, parsed_log, endpoint_name):
     # Input:
@@ -40,7 +40,7 @@ def load_bodyfile(bodyfile_path):
         res = pd.read_csv(bodyfile_path, sep="|")
         return res
     except FileNotFoundError as filenotfound:
-        print(Fore.RED, "[ERROR] Body file not found.. {}".format(filenotfound), Fore.RESET)
+        print(Fore.MAGENTA, "[WARNING] Body file not found.. {}".format(filenotfound), Fore.RESET)
         return None
 
 def search_year (bodyfile, filename):
@@ -50,6 +50,9 @@ def search_year (bodyfile, filename):
     # In case the bodyfile doesn't have the filename, we search the same filename with ".gz" at the end.
     # In case there's still nothing, we search in the filename with the following format: YYYMMDD
     # In case there's still nothing, we return the current year date
+    if bodyfile is None:
+        return datetime.datetime.now().year
+    
     res = bodyfile[bodyfile["filename"].apply(lambda x: filename.endswith(x))].tail(1)
     if len(res) == 0:
         # The filename not found in body file
@@ -110,6 +113,7 @@ def parse_log(input_path, output_path, log_type, endpoint_name, bodyfile_path):
             return ""
 
         parsed_log = log_class.parse()
+
         dict_dump_to_jsonl(output_path, f, parsed_log, endpoint_name)
 
 

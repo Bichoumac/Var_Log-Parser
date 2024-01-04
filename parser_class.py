@@ -229,6 +229,7 @@ class LogSecure(Log):
                     print(Fore.RED, f"[-] Error - Parsing Connection closed: {e}", Fore.RESET, ":", log)
 
             #print(res_log)
+            res.append(res_log)
             
         return res
 
