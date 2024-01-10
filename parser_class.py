@@ -327,8 +327,9 @@ class LogApache(Log):
     def parse(self):
         res = []
         logs = self.read_log()
-        regexp = '^(?P<src_ip>\S+)\s(\S+)\s(?P<user>\S+)\s\[(?P<time>[^\]]+)\]\s\"(?P<http_method>\S+)\s(?P<uri>\S+)\s(?P<http_version>\S+)\"\s(?P<http_status_code>\d+)\s(?P<bytes>\S+)\s(?P<http_referrer>\S*?)\s\"(?P<user_agent>.*)\"'
-        regexp_40x = '^(?P<src_ip>\S+)\s(\S+)\s(?P<user>\S+)\s\[(?P<time>[^\]]+)\]\s\"(?P<http_thing>\S*?)\"\s(?P<http_status_code>\d+)\s(?P<bytes>\S+)\s(?P<http_referrer>\S*?)\s\"(?P<user_agent>.*)\"'
+        regexp = r'^(?P<src_ip>\S+)\s(?P<proxy_ip>\S+)?\s?(\S+)\s(?P<user>\S+)\s\[(?P<time>[^\]]+)\]\s\"(?P<http_method>\S+)?\s?(?P<uri>\S+)?\s?(?P<http_version>\S+)?\"\s?(?P<http_status_code>\d+)\s(?P<bytes>\S+)'
+        regexp_40x = r'^(?P<src_ip>\S+)\s(\S+)\s(?P<user>\S+)\s\[(?P<time>[^\]]+)\]\s\"(?P<http_thing>\S*?)\"\s(?P<http_status_code>\d+)\s(?P<bytes>\S+)\s(?P<http_referrer>\S*?)\s\"(?P<user_agent>.*)\"'
+        regex_minimum = r'\[(?P<time>[^\]]+)\]\s\"(?:(?P<http_method>\S+)?\s?(?P<uri>\S+)?\s?(?P<http_version>\S+)?\")?\s?(?P<http_status_code>\d+)'
 
         for log in logs:
             res_log = {}
@@ -336,6 +337,8 @@ class LogApache(Log):
                 matched = re.match(regexp, log)
                 if matched is None:
                     matched = re.match(regexp_40x, log)
+                if matched is None:
+                    matched = re.search(regex_minimum, log)
                 res_log = matched.groupdict()
                 res_log["_time"] = int(datetime.datetime.strptime(res_log["time"], "%d/%b/%Y:%H:%M:%S %z").timestamp())
             except Exception as e:
